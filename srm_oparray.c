@@ -359,6 +359,9 @@ static const op_usage opcodes[] = {
 	/*  207 */  { "ZEND_FRAMELESS_ICALL_3", ALL_USED | EXT_VAL_FLF },
 	/*  208 */  { "ZEND_JMP_FRAMELESS", ALL_USED | EXT_CACHED_PTR | OP2_OPNUM },
 	/*  209 */  { "INIT_PARENT_PROPERTY_HOOK_CALL", OP1_USED },
+#      if PHP_VERSION_ID >= 80500
+	/*  210 */  { "DECLARE_ATTRIBUTED_CONST", ALL_USED },
+#      endif
 #     endif
 #    endif
 #   endif
