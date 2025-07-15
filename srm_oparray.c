@@ -193,7 +193,7 @@ static const op_usage opcodes[] = {
 	/*  100 */	{ "UNKNOWN [100]", ALL_USED },
 #endif
 
-	/*  101 */	{ "EXT_STMT", ALL_USED },
+	/*  101 */	{ "EXT_STMT", NONE_USED },
 	/*  102 */	{ "EXT_FCALL_BEGIN", ALL_USED },
 	/*  103 */	{ "EXT_FCALL_END", ALL_USED },
 	/*  104 */	{ "EXT_NOP", ALL_USED },
