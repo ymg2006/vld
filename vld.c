@@ -299,14 +299,14 @@ static int vld_dump_cle (zend_class_entry *class_entry)
 			vld_printf(stderr, "Class %s:\n", ZSTRING_VALUE(ce->name));
 			zend_hash_apply_with_arguments(&ce->function_table, (apply_func_args_t) VLD_WRAP_PHP7(vld_dump_fe), 0);
 
-#if PHP_VERSION_ID >= 80400
-			vld_dump_property_hooks(ce);
-#endif
-
 			vld_printf(stderr, "End of class %s.\n\n", ZSTRING_VALUE(ce->name));
 		} else {
 			vld_printf(stderr, "Class %s: [no user functions]\n", ZSTRING_VALUE(ce->name));
 		}
+
+#if PHP_VERSION_ID >= 80400
+		vld_dump_property_hooks(ce);
+#endif
 
 		if (VLD_G(path_dump_file)) {
 			fprintf(VLD_G(path_dump_file), "}\n");

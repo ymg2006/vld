@@ -358,6 +358,7 @@ static const op_usage opcodes[] = {
 	/*  206 */  { "ZEND_FRAMELESS_ICALL_2", ALL_USED | EXT_VAL_FLF },
 	/*  207 */  { "ZEND_FRAMELESS_ICALL_3", ALL_USED | EXT_VAL_FLF },
 	/*  208 */  { "ZEND_JMP_FRAMELESS", ALL_USED | EXT_CACHED_PTR | OP2_OPNUM },
+	/*  209 */  { "INIT_PARENT_PROPERTY_HOOK_CALL", OP1_USED },
 #     endif
 #    endif
 #   endif
@@ -756,6 +757,17 @@ void vld_dump_op(int nr, zend_op * op_ptr, unsigned int base_address, int notdea
 			break;
 	}
 #endif
+#if PHP_VERSION_ID >= 80400
+	if (op.opcode == ZEND_INIT_PARENT_PROPERTY_HOOK_CALL) {
+		if (op.op2.num == ZEND_PROPERTY_HOOK_GET) {
+			fetch_type = "get";
+		} else if (op.op2.num == ZEND_PROPERTY_HOOK_SET) {
+			fetch_type = "set";
+		} else {
+			fetch_type = "UNKNOWN";
+		}
+	}
+#endif
 
 #if PHP_VERSION_ID >= 70400
 	if (op.opcode == ZEND_ASSIGN_DIM_OP) {
@@ -832,21 +844,21 @@ void vld_dump_op(int nr, zend_op * op_ptr, unsigned int base_address, int notdea
 
 	if (op.opcode >= NUM_KNOWN_OPCODES) {
 		if (VLD_G(format)) {
-			vld_printf(stderr, "%5d %s %c %c %c %c %s <%03d>%-23s %s %-14s ", nr, VLD_G(col_sep), notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', VLD_G(col_sep), op.opcode, VLD_G(col_sep), fetch_type);
+			vld_printf(stderr, "%5d %s %c %c %c %c %s <%03d>%-27s %s %-14s ", nr, VLD_G(col_sep), notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', VLD_G(col_sep), op.opcode, VLD_G(col_sep), fetch_type);
 		} else {
-			vld_printf(stderr, "%5d%c %c %c %c <%03d>%-23s %-14s ", nr, notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', op.opcode, "", fetch_type);
+			vld_printf(stderr, "%5d%c %c %c %c <%03d>%-27s %-14s ", nr, notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', op.opcode, "", fetch_type);
 		}
 	} else if (VLD_G(verbosity) >= 3) {
 		if (VLD_G(format)) {
-			vld_printf(stderr, "%5d %s %c %c %c %c %s %-28s %s %-14s ", nr, VLD_G(col_sep), notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', VLD_G(col_sep), opcodes[op.opcode].name, VLD_G(col_sep), fetch_type);
+			vld_printf(stderr, "%5d %s %c %c %c %c %s %-32s %s %-14s ", nr, VLD_G(col_sep), notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', VLD_G(col_sep), opcodes[op.opcode].name, VLD_G(col_sep), fetch_type);
 		} else {
-			vld_printf(stderr, "%5d%c %c %c %c <%3d> %-28s %-14s ", nr, notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', op.opcode, opcodes[op.opcode].name, fetch_type);
+			vld_printf(stderr, "%5d%c %c %c %c <%3d> %-32s %-14s ", nr, notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', op.opcode, opcodes[op.opcode].name, fetch_type);
 		}
 	} else {
 		if (VLD_G(format)) {
-			vld_printf(stderr, "%5d %s %c %c %c %c %s %-28s %s %-14s ", nr, VLD_G(col_sep), notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', VLD_G(col_sep), opcodes[op.opcode].name, VLD_G(col_sep), fetch_type);
+			vld_printf(stderr, "%5d %s %c %c %c %c %s %-32s %s %-14s ", nr, VLD_G(col_sep), notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', VLD_G(col_sep), opcodes[op.opcode].name, VLD_G(col_sep), fetch_type);
 		} else {
-			vld_printf(stderr, "%5d%c %c %c %c %-28s %-14s ", nr, notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', opcodes[op.opcode].name, fetch_type);
+			vld_printf(stderr, "%5d%c %c %c %c %-32s %-14s ", nr, notdead ? ' ' : '*', entry ? 'E' : ' ', start ? '>' : ' ', end ? '>' : ' ', opcodes[op.opcode].name, fetch_type);
 		}
 	}
 
@@ -979,8 +991,8 @@ void vld_dump_oparray(zend_op_array *opa)
 	if (VLD_G(format)) {
 		vld_printf(stderr, "line%s# *%s%s%sop%sfetch%sext%sreturn%soperands\n",VLD_G(col_sep),VLD_G(col_sep),VLD_G(col_sep),VLD_G(col_sep),VLD_G(col_sep),VLD_G(col_sep),VLD_G(col_sep),VLD_G(col_sep));
 	} else {
-		vld_printf(stderr, "line      #* E I O op                           fetch          ext  return  operands\n");
-		vld_printf(stderr, "-------------------------------------------------------------------------------------\n");
+		vld_printf(stderr, "line      #* E I O op                               fetch          ext  return  operands\n");
+		vld_printf(stderr, "-----------------------------------------------------------------------------------------\n");
 	}
 	for (i = 0; i < opa->last; i++) {
 		vld_dump_op(i, opa->opcodes, base_address, vld_set_in(set, i), vld_set_in(branch_info->entry_points, i), vld_set_in(branch_info->starts, i), vld_set_in(branch_info->ends, i), opa);
