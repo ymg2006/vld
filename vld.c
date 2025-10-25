@@ -408,11 +408,15 @@ static zend_op_array *vld_compile_string(zval *source_string, char *filename)
  *    This function provides a hook for execution */
 static void vld_execute_ex(zend_execute_data *execute_data)
 {
-	vld_dump_oparray (&execute_data->func->op_array);
+ 	zend_function *f = EX(func);
+    if (f && f->type == ZEND_USER_FUNCTION) {
+		zend_op_array *op_array = &f->op_array;
+		vld_dump_oparray (op_array);
 
-	zend_hash_apply_with_arguments (CG(function_table), (apply_func_args_t) VLD_WRAP_PHP7(vld_dump_fe), 0);
-	zend_hash_apply (CG(class_table), (apply_func_t) VLD_WRAP_PHP7(vld_dump_cle));
+		zend_hash_apply_with_arguments (CG(function_table), (apply_func_args_t) VLD_WRAP_PHP7(vld_dump_fe), 0);
+		zend_hash_apply (CG(class_table), (apply_func_t) VLD_WRAP_PHP7(vld_dump_cle));
+	}
 
-	//old_execute_ex(execute_data);
+	old_execute_ex(execute_data);
 }
 /* }}} */
