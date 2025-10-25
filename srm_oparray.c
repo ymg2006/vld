@@ -702,9 +702,9 @@ void vld_dump_op(int nr, zend_op * op_ptr, unsigned int base_address, int notdea
 	unsigned int flags, op1_type, op2_type, res_type;
 	const zend_op op = op_ptr[nr];
 
-	if (op.lineno == 0) {
-		return;
-	}
+	// if (op.lineno == 0) {
+	// 	return;
+	// }
 
 	if (op.opcode >= NUM_KNOWN_OPCODES) {
 		flags = ALL_USED;

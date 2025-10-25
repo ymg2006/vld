@@ -128,9 +128,11 @@ PHP_RINIT_FUNCTION(vld)
 	old_execute_ex = zend_execute_ex;
 
 	if (VLD_G(active)) {
-		zend_compile_file = vld_compile_file;
-		zend_compile_string = vld_compile_string;
 		if (!VLD_G(execute)) {
+			zend_compile_file = vld_compile_file;
+			zend_compile_string = vld_compile_string;
+		}
+		else {
 			zend_execute_ex = vld_execute_ex;
 		}
 	}
@@ -406,6 +408,11 @@ static zend_op_array *vld_compile_string(zval *source_string, char *filename)
  *    This function provides a hook for execution */
 static void vld_execute_ex(zend_execute_data *execute_data)
 {
-	// nothing to do
+	vld_dump_oparray (&execute_data->func->op_array);
+
+	zend_hash_apply_with_arguments (CG(function_table), (apply_func_args_t) VLD_WRAP_PHP7(vld_dump_fe), 0);
+	zend_hash_apply (CG(class_table), (apply_func_t) VLD_WRAP_PHP7(vld_dump_cle));
+
+	//old_execute_ex(execute_data);
 }
 /* }}} */
