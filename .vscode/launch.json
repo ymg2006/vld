@@ -5,22 +5,24 @@
             "name": "Debug VLD Extension",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "Y:/Deobfuscate-Unpack/Php/build/vld/php-8.4.7/vs17/x64/x64/Release_TS/php.exe",
+            "program": "../../x64/Release_TS/php.exe",
             "args": [
                 "-d enable_dl=1",
-                "-d extension_dir=Y:/Deobfuscate-Unpack/Php/build/vld/php-8.4.7/vs17/x64/x64/Release_TS",
+                "-d extension_dir=../Release_TS",
                 "-d extension=php_vld.dll",
-                "-d zend_extension=Y:/Deobfuscate-Unpack/Php/build/vld/php-8.4.7/vs17/x64/x64/Release_TS/ioncube_loader_win_8.4.dll",
+                "-d zend_extension=Y:/Deobfuscate-Unpack/Php/build/ioncube_loader_win_8.4.dll",
                 "-d vld.active=1",
                 "-d vld.execute=1",
-                "Y:/Deobfuscate-Unpack/Php/build/generate_stub_prot.php"
+                "-d error_reporting=E_ALL",
+                "-d display_errors=1"
+                "Y:/Deobfuscate-Unpack/Php/build/helloworld-encoded.php"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
                 {
                     "name": "PATH",
-                    "value": "Y:/Deobfuscate-Unpack/Php/build/vld/php-8.4.7/vs17/x64/x64/Release_TS;Y:/Deobfuscate-Unpack/Php/build/vld/php-8.4.7/vs17/x64/ext/vld;${env:PATH}"
+                    "value": "Y:/Deobfuscate-Unpack/Php/build/ion-vld/php-8.4.7/vs17/x64/x64/Release_TS;Y:/Deobfuscate-Unpack/Php/build/ion-vld/php-8.4.7/vs17/x64/ext/vld;${env:PATH}"
                 }
             ],
             "console": "integratedTerminal"
